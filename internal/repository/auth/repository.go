@@ -89,25 +89,30 @@ func (r *Repository) CreateUser(ctx context.Context, user entAuth.User, assigned
 			r.Log.Error(err)
 			return errors.New("попробуйте позже")
 		}
-		if _, err := db.Model(&user).Set("password=crypt(?, gen_salt('bf'))", user.Password).Update(); err != nil {
+		if _, err := db.Model(&user).
+			Set("password=crypt(?, gen_salt('bf'))", user.Password).
+			WherePK().
+			Update(); err != nil {
 			r.Log.Error(err)
 			return errors.New("попробуйте позже")
 		}
 
-		var roles []*entAuth.Role
-		if err := db.Model(&roles).WhereIn("name IN (?)", assignedRoles).Select(); err != nil {
-			r.Log.Error(err)
-			return errors.New("получение списка ролей")
-		}
-		userRoles := lo.Map(roles, func(r *entAuth.Role, _ int) *entAuth.UserRole {
-			return &entAuth.UserRole{
-				UserId: user.Id,
-				RoleId: r.Id,
+		if len(assignedRoles) > 0 {
+			var roles []*entAuth.Role
+			if err := db.Model(&roles).WhereIn("name IN (?)", assignedRoles).Select(); err != nil {
+				r.Log.Error(err)
+				return errors.New("получение списка ролей")
 			}
-		})
-		if _, err := db.Model(&userRoles).Insert(); err != nil {
-			r.Log.Error(err)
-			return errors.New("ошибка записи ролей")
+			userRoles := lo.Map(roles, func(r *entAuth.Role, _ int) *entAuth.UserRole {
+				return &entAuth.UserRole{
+					UserId: user.Id,
+					RoleId: r.Id,
+				}
+			})
+			if _, err := db.Model(&userRoles).Insert(); err != nil {
+				r.Log.Error(err)
+				return errors.New("ошибка записи ролей")
+			}
 		}
 		return nil
 	})
@@ -167,17 +172,19 @@ func (r *Repository) createUserPreconds(ctx context.Context, user entAuth.User, 
 			return errors.New("имя пользователя обязано быть уникальным в системе")
 		}
 
-		var rolesCount int
-		if _, err := db.Query(
-			pg.Scan(&rolesCount),
-			"SELECT COUNT(*) FROM roles WHERE name IN (?)",
-			pg.In(assignedRoles),
-		); err != nil {
-			r.Log.Error(err)
-			return errors.New("получение списка ролей")
-		}
-		if rolesCount != len(assignedRoles) {
-			return errors.New("имеются некорректные значения назначаемых ролей")
+		if len(assignedRoles) > 0 {
+			var rolesCount int
+			if _, err := db.Query(
+				pg.Scan(&rolesCount),
+				"SELECT COUNT(*) FROM roles WHERE name IN (?)",
+				pg.In(assignedRoles),
+			); err != nil {
+				r.Log.Error(err)
+				return errors.New("получение списка ролей")
+			}
+			if rolesCount != len(assignedRoles) {
+				return errors.New("имеются некорректные значения назначаемых ролей")
+			}
 		}
 		return nil
 	})
