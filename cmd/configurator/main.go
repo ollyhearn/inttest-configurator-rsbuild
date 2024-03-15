@@ -53,8 +53,16 @@ func main() {
 		}
 	}
 
-	apis := initApis(logger, db)
-	app := initFiberRouter(apis)
+	var (
+		apis     []api.Handler
+		aUseCase *authUseCase.UseCase
+	)
+	{
+		repo := authRepository.New(db, logger)
+		aUseCase = authUseCase.New(logger, repo)
+		apis = append(apis, authApi.New(logger, aUseCase))
+	}
+	app := initFiberRouter(apis, aUseCase)
 	ln, err := initFiberListener(":8080")
 	if err != nil {
 		log.Fatal(err)
@@ -82,16 +90,11 @@ func initLogger() (*zap.SugaredLogger, error) {
 	return logger.Sugar(), nil
 }
 
-func initApis(logger *zap.SugaredLogger, db *database.PGDB) (apis []api.Handler) {
-	{
-		repo := authRepository.New(db, logger)
-		useCase := authUseCase.New(logger, repo)
-		apis = append(apis, authApi.New(logger, useCase))
-	}
-	return
-}
-
-func initFiberRouter(apis []api.Handler) *fiber.App {
+func initFiberRouter(
+	apis []api.Handler,
+	// для валидатора через постгрес
+	uc *authUseCase.UseCase,
+) *fiber.App {
 	fiberApi := fiber.New(fiber.Config{
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
@@ -103,7 +106,7 @@ func initFiberRouter(apis []api.Handler) *fiber.App {
 	})
 	apiV1 := fiberApi.Group("/api/v1")
 	for _, a := range apis {
-		a.Register(apiV1, api.AuthMiddleware)
+		a.Register(apiV1, api.NewAuthMiddleware(uc))
 	}
 	return fiberApi
 }

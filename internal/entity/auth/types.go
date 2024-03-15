@@ -1,6 +1,8 @@
 package auth
 
-import "github.com/Ghytro/inttest-configurator/internal/entity"
+import (
+	"github.com/Ghytro/inttest-configurator/internal/entity"
+)
 
 type (
 	User struct {
@@ -27,12 +29,12 @@ type (
 
 		Id   entity.BigIntPK `pg:"id" json:"id"`
 		Name string          `pg:"name" json:"name"`
-		Desc string          `pg:"description" json:"description"`
+		Desc *string         `pg:"description" json:"description"`
 
 		Perms []Perm `pg:"many2many:role_permissions,join_fk:permission_id" json:"permissions"`
 	}
 
-	RolePermissions struct {
+	RolePermission struct {
 		tableName struct{} `pg:"role_permissions"`
 
 		RoleId entity.BigIntPK `pg:"role_id"`
@@ -44,6 +46,6 @@ type (
 
 		Id   entity.BigIntPK `pg:"id" json:"id"`
 		Name EPermission     `pg:"name" json:"name"`
-		Desc string          `pg:"description" json:"description"`
+		Desc *string         `pg:"description" json:"description"`
 	}
 )

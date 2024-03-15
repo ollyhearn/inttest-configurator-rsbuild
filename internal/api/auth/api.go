@@ -1,6 +1,8 @@
 package auth
 
 import (
+	"errors"
+
 	"github.com/Ghytro/inttest-configurator/internal/api"
 	"github.com/Ghytro/inttest-configurator/internal/entity"
 	entAuth "github.com/Ghytro/inttest-configurator/internal/entity/auth"
@@ -24,6 +26,10 @@ func New(log *zap.SugaredLogger, useCase *auth.UseCase) *API {
 
 func (a *API) Register(router fiber.Router, authMiddleware fiber.Handler, middlewares ...fiber.Handler) {
 	r := fiber.New()
+	r.Post("/", a.auth)
+	router.Mount("/auth", r)
+
+	r = fiber.New()
 
 	r.Use(authMiddleware)
 	for _, m := range middlewares {
@@ -44,7 +50,11 @@ func (a *API) createUser(ctx *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	result, err := a.useCase.CreateUser(ctx.Context(), 0, form.UserName, form.Password, form.Roles...)
+	creator, ok := api.GetUserEntity(ctx)
+	if !ok {
+		return errors.New("user not authorized")
+	}
+	result, err := a.useCase.CreateUser(ctx.Context(), creator.Id, form.UserName, form.Password, form.Roles...)
 	if err != nil {
 		return err
 	}
@@ -61,7 +71,11 @@ func (a *API) deleteUser(ctx *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	err = a.useCase.DeleteUser(ctx.Context(), 0, id)
+	deleter, ok := api.GetUserEntity(ctx)
+	if !ok {
+		return errors.New("user not authorized")
+	}
+	err = a.useCase.DeleteUser(ctx.Context(), deleter.Id, id)
 	if err != nil {
 		return err
 	}
@@ -71,7 +85,11 @@ func (a *API) deleteUser(ctx *fiber.Ctx) error {
 func (a *API) listUsers(ctx *fiber.Ctx) error {
 	const location = "ошибка получения списка пользователей"
 
-	users, err := a.useCase.ListUsers(ctx.Context(), 0)
+	querier, ok := api.GetUserEntity(ctx)
+	if !ok {
+		return errors.New("no user entity in authorized ctx")
+	}
+	users, err := a.useCase.ListUsers(ctx.Context(), querier.Id)
 	if err != nil {
 		return err
 	}
@@ -85,4 +103,18 @@ func (a *API) listUsers(ctx *fiber.Ctx) error {
 			}),
 		}
 	}))
+}
+
+func (a *API) auth(ctx *fiber.Ctx) error {
+	form, err := api.ParseBody[authRequest](ctx)
+	if err != nil {
+		return err
+	}
+	token, err := a.useCase.GenToken(ctx.Context(), form.UserName, form.Password)
+	if err != nil {
+		return err
+	}
+	return ctx.JSON(authResponse{
+		Token: token,
+	})
 }

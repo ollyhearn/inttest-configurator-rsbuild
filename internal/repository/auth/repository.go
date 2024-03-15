@@ -33,7 +33,7 @@ func New(db *database.PGDB, log *zap.SugaredLogger) *Repository {
 
 func (r *Repository) GetUser(ctx context.Context, id entity.BigIntPK, deepFetchRoles bool) (result entAuth.User, err error) {
 	err = r.DB.RunInTransaction(ctx, func(db orm.DB) error {
-		q := db.Model(ctx, &result)
+		q := db.Model(&result)
 		if deepFetchRoles {
 			q = q.Relation("Roles")
 		}
@@ -60,7 +60,7 @@ func (r *Repository) GetUser(ctx context.Context, id entity.BigIntPK, deepFetchR
 
 func (r *Repository) ListUsers(ctx context.Context, fetchRoles bool) (result []entAuth.User, err error) {
 	err = r.DB.RunInTransaction(ctx, func(db orm.DB) error {
-		q := db.Model(ctx, &result)
+		q := db.Model(&result)
 		if fetchRoles {
 			q.Relation("Roles")
 		}
@@ -89,6 +89,10 @@ func (r *Repository) CreateUser(ctx context.Context, user entAuth.User, assigned
 			r.Log.Error(err)
 			return errors.New("попробуйте позже")
 		}
+		if _, err := db.Model(&user).Set("password=crypt(?, gen_salt('bf'))", user.Password).Update(); err != nil {
+			r.Log.Error(err)
+			return errors.New("попробуйте позже")
+		}
 
 		var roles []*entAuth.Role
 		if err := db.Model(&roles).WhereIn("name IN (?)", assignedRoles).Select(); err != nil {
@@ -111,6 +115,37 @@ func (r *Repository) CreateUser(ctx context.Context, user entAuth.User, assigned
 		return entAuth.User{}, errors.Wrap(err, "ошибка создания пользователя")
 	}
 	return user, nil
+}
+
+func (r *Repository) IsAuth(ctx context.Context, username, password string) error {
+	return r.DB.RunInTransaction(ctx, func(db orm.DB) error {
+		c, err := db.Model((*entAuth.User)(nil)).
+			Where("username=? AND password=crypt(?, password)", username, password).
+			Count()
+		if err != nil {
+			return err
+		}
+		if c == 0 {
+			return errors.New("неправильный логин или пароль")
+		}
+		return nil
+	})
+}
+
+func (r *Repository) AuthUser(ctx context.Context, username, password string) (result entAuth.User, err error) {
+	err = r.DB.RunInTransaction(ctx, func(db orm.DB) error {
+		err := db.Model(&result).
+			Where("username=? AND password=crypt(?, password)", username, password).
+			Select()
+		if err != nil {
+			return err
+		}
+		return nil
+	})
+	if err != nil {
+		return entAuth.User{}, nil
+	}
+	return result, nil
 }
 
 func (r *Repository) DeleteUser(ctx context.Context, id entity.BigIntPK) error {

@@ -16,4 +16,6 @@ type UserRepository interface {
 	CreateUser(ctx context.Context, user entAuth.User, assignedRoles ...string) (entAuth.User, error)
 	DeleteUser(ctx context.Context, id entity.BigIntPK) error
 	GetRolePerms(ctx context.Context, roleId entity.BigIntPK) (result []entAuth.Perm, err error)
+	AuthUser(ctx context.Context, username, password string) (result entAuth.User, err error)
+	IsAuth(ctx context.Context, username, password string) error
 }

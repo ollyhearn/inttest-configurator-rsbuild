@@ -6,6 +6,8 @@ import (
 	rulesAuth "github.com/Ghytro/inttest-configurator/internal/businessrules/auth"
 	"github.com/Ghytro/inttest-configurator/internal/entity"
 	entAuth "github.com/Ghytro/inttest-configurator/internal/entity/auth"
+	"github.com/Ghytro/inttest-configurator/pkg/secrets"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
@@ -103,4 +105,20 @@ func (uc *UseCase) ListUsers(
 		return nil, err
 	}
 	return result, nil
+}
+
+func (uc *UseCase) AuthUser(ctx context.Context, username, password string) (user entAuth.User, err error) {
+	return uc.userRepo.AuthUser(ctx, username, password)
+}
+
+func (uc *UseCase) GenToken(ctx context.Context, username, password string) (token string, err error) {
+	if err := uc.userRepo.IsAuth(ctx, username, password); err != nil {
+		uc.log.Error(err)
+		return "", err
+	}
+	claims := jwt.MapClaims{
+		ClaimsKeyUsername: username,
+		ClaimsKeyPassword: password,
+	}
+	return jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(secrets.JwtSecret)
 }

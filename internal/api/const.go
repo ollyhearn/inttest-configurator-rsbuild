@@ -5,4 +5,5 @@ import (
 )
 
 const JwtLocation = "header:" + fiber.HeaderAuthorization
-const JwtSecret = "mysecret"
+const JwtContextKey = "jwt_user_fiber_context"
+const UserEntityContextKey = "__user_entity"
