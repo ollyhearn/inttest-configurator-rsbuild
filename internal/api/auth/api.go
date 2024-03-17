@@ -32,7 +32,7 @@ func (a *API) Register(router fiber.Router, authMiddleware fiber.Handler, middle
 
 	r = fiber.New()
 
-	r.Use(authMiddleware)
+	r.Use("/users", authMiddleware)
 	for _, m := range middlewares {
 		r.Use(m)
 	}

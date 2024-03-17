@@ -1,16 +1,15 @@
 import React from "react";
 
-import { Row } from "antd";
+import { BrowserRouter } from "react-router-dom";
+
 import "./App.css";
-import AuthDialog from "./components/AuthDialog";
+import AppRoutes from "./AppRoutes";
 
 function App() {
   return (
-    <div className="App">
-      <Row justify={"center"}>
-        <AuthDialog />
-      </Row>
-    </div>
+    <BrowserRouter>
+      <AppRoutes />
+    </BrowserRouter>
   );
 }
 

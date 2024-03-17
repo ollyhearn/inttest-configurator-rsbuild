@@ -10,7 +10,7 @@ const AuthDialog = () => {
   const userApi = new UsersApi();
 
   const submitAuthData = (formData) => {
-    userApi.createUser(formData);
+    userApi.auth(formData);
   };
 
   return (
