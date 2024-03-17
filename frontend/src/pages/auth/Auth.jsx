@@ -1,13 +1,13 @@
 import React from "react";
 import AuthDialog from "../../components/AuthDialog";
-import { Row } from "antd";
+import "./Auth.css";
 
-const Auth = () => {
+const AuthPage = () => {
   return (
-    <Row justify={"center"}>
+    <div className="contentContainer">
       <AuthDialog />
-    </Row>
+    </div>
   );
 };
 
-export default Auth;
+export default AuthPage;

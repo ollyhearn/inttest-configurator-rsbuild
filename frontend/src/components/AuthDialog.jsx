@@ -3,6 +3,8 @@ import React from "react";
 import { Button, Col, Form, Input } from "antd";
 import "./AuthDialog.css";
 import UsersApi from "../api/src/api/UsersApi";
+import { message } from "antd";
+import { routesEnum } from "../routesEnum";
 
 const AuthDialog = () => {
   const [form] = Form.useForm();
@@ -10,7 +12,13 @@ const AuthDialog = () => {
   const userApi = new UsersApi();
 
   const submitAuthData = (formData) => {
-    userApi.auth(formData);
+    userApi.auth(formData, (e, data, response) => {
+      if (e) {
+        message.error(response?.body?.message);
+        return;
+      }
+      window.location.href = routesEnum.projects;
+    });
   };
 
   return (
