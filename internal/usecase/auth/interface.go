@@ -3,9 +3,9 @@ package auth
 import (
 	"context"
 
-	"github.com/Ghytro/inttest-configurator/internal/entity"
-	entAuth "github.com/Ghytro/inttest-configurator/internal/entity/auth"
-	"github.com/Ghytro/inttest-configurator/internal/usecase/internal/common"
+	"configurator/internal/entity"
+	entAuth "configurator/internal/entity/auth"
+	"configurator/internal/usecase/internal/common"
 )
 
 type UserRepository interface {

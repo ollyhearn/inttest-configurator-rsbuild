@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"github.com/Ghytro/inttest-configurator/internal/entity"
+	"configurator/internal/entity"
 )
 
 type (

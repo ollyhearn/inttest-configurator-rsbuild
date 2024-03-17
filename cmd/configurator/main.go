@@ -13,17 +13,37 @@ import (
 
 	_ "github.com/lib/pq"
 
-	"github.com/Ghytro/inttest-configurator/internal/api"
-	authApi "github.com/Ghytro/inttest-configurator/internal/api/auth"
-	authRepository "github.com/Ghytro/inttest-configurator/internal/repository/auth"
-	authUseCase "github.com/Ghytro/inttest-configurator/internal/usecase/auth"
-	"github.com/Ghytro/inttest-configurator/pkg/database"
+	"configurator/internal/api"
+
+	authApi "configurator/internal/api/auth"
+
+	authRepository "configurator/internal/repository/auth"
+
+	authUseCase "configurator/internal/usecase/auth"
+
+	"configurator/pkg/database"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/pressly/goose"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"golang.org/x/sync/errgroup"
 )
+
+// @title IntTest configurator
+// @version 2.0
+// @description idk what to write here
+// @description it's just a swagger
+// @termsOfService http://swagger.io/terms/
+
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @BasePath /api/v1
+
+// @securityDefinitions.cookieAuth ApiKeyAuth
+// @in cookie
+// @name jwt
 
 func main() {
 	// fixme: по нормальному через кобру переделать

@@ -3,8 +3,9 @@ package auth
 import (
 	"errors"
 
-	"github.com/Ghytro/inttest-configurator/internal/entity"
-	"github.com/Ghytro/inttest-configurator/internal/entity/auth"
+	"configurator/internal/entity"
+	"configurator/internal/entity/auth"
+
 	"github.com/samber/lo"
 )
 

@@ -3,7 +3,7 @@ package auth
 import (
 	"time"
 
-	"github.com/Ghytro/inttest-configurator/internal/entity"
+	"configurator/internal/entity"
 )
 
 type (

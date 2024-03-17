@@ -3,9 +3,12 @@ package api
 import (
 	"errors"
 
-	entAuth "github.com/Ghytro/inttest-configurator/internal/entity/auth"
-	"github.com/Ghytro/inttest-configurator/internal/usecase/auth"
-	"github.com/Ghytro/inttest-configurator/pkg/secrets"
+	entAuth "configurator/internal/entity/auth"
+
+	"configurator/internal/usecase/auth"
+
+	"configurator/pkg/secrets"
+
 	jwtware "github.com/gofiber/contrib/jwt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
@@ -22,7 +25,7 @@ func NewAuthMiddleware(useCase *auth.UseCase) fiber.Handler {
 			return JwtValidator(useCase, c)
 		},
 		ErrorHandler: func(c *fiber.Ctx, err error) error {
-			if err.Error() == "Missing or malformed JWT" {
+			if err.Error() == "missing or malformed JWT" {
 				// ErrResponse
 				return c.Status(fiber.StatusUnauthorized).SendString("Отсутствует или неправильно сформирован Токен Авторизации")
 			} else {

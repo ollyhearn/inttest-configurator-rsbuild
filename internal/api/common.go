@@ -3,7 +3,8 @@ package api
 import (
 	"errors"
 
-	"github.com/Ghytro/inttest-configurator/internal/entity"
+	"configurator/internal/entity"
+
 	"github.com/samber/lo"
 
 	"github.com/gofiber/fiber/v2"
@@ -18,6 +19,8 @@ type ErrResponse struct {
 func (err ErrResponse) Error() string {
 	return err.Msg
 }
+
+type OK struct{}
 
 func ParseBody[T any](ctx *fiber.Ctx) (T, error) {
 	var form T

@@ -1,6 +1,6 @@
-module github.com/Ghytro/inttest-configurator
+module configurator
 
-go 1.21.3
+go 1.21
 
 require (
 	github.com/go-pg/pg/v10 v10.12.0

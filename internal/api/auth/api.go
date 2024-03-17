@@ -3,10 +3,11 @@ package auth
 import (
 	"errors"
 
-	"github.com/Ghytro/inttest-configurator/internal/api"
-	"github.com/Ghytro/inttest-configurator/internal/entity"
-	entAuth "github.com/Ghytro/inttest-configurator/internal/entity/auth"
-	"github.com/Ghytro/inttest-configurator/internal/usecase/auth"
+	"configurator/internal/api"
+	"configurator/internal/entity"
+	entAuth "configurator/internal/entity/auth"
+	"configurator/internal/usecase/auth"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/samber/lo"
 	"go.uber.org/zap"
@@ -43,6 +44,18 @@ func (a *API) Register(router fiber.Router, authMiddleware fiber.Handler, middle
 	router.Mount("/users", r)
 }
 
+// createUser godoc
+// @Summary create user
+// @ID createUser
+// @Tags users
+// @Accept  	json
+// @Produce  	json
+// @Success 200 {object} createUserResponse
+// @Failure 400 {object} api.ErrResponse
+// @Failure 500 {object} api.ErrResponse
+// @Security ApiKeyAuth
+// @Param form body createUserRequest true "create user request model"
+// @Router /users [post]
 func (a *API) createUser(ctx *fiber.Ctx) error {
 	const location = "ошибка создания пользователя"
 
@@ -64,6 +77,18 @@ func (a *API) createUser(ctx *fiber.Ctx) error {
 	})
 }
 
+// deleteUser godoc
+// @Summary delete user
+// @ID deleteUser
+// @Tags users
+// @Accept  	json
+// @Produce  	json
+// @Success 200 {object} api.OK
+// @Failure 400 {object} api.ErrResponse
+// @Failure 500 {object} api.ErrResponse
+// @Security ApiKeyAuth
+// @Param id path number true "id of a user to delete"
+// @Router /users/{id} [delete]
 func (a *API) deleteUser(ctx *fiber.Ctx) error {
 	const location = "ошибка удаления пользователя"
 
@@ -82,6 +107,17 @@ func (a *API) deleteUser(ctx *fiber.Ctx) error {
 	return ctx.JSON(nil)
 }
 
+// listUsers godoc
+// @Summary create user
+// @ID listUsers
+// @Tags users
+// @Accept  	json
+// @Produce  	json
+// @Success 200 {array} listUsersResponseItem
+// @Failure 400 {object} api.ErrResponse
+// @Failure 500 {object} api.ErrResponse
+// @Security ApiKeyAuth
+// @Router /users [get]
 func (a *API) listUsers(ctx *fiber.Ctx) error {
 	const location = "ошибка получения списка пользователей"
 
@@ -105,6 +141,17 @@ func (a *API) listUsers(ctx *fiber.Ctx) error {
 	}))
 }
 
+// auth godoc
+// @Summary create user
+// @ID auth
+// @Tags users
+// @Accept  	json
+// @Produce  	json
+// @Success 200 {object} api.OK
+// @Failure 400 {object} api.ErrResponse
+// @Failure 500 {object} api.ErrResponse
+// @Param form body authRequest true "login/pass form"
+// @Router /auth [post]
 func (a *API) auth(ctx *fiber.Ctx) error {
 	form, err := api.ParseBody[authRequest](ctx)
 	if err != nil {
@@ -114,7 +161,12 @@ func (a *API) auth(ctx *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	return ctx.JSON(authResponse{
-		Token: token,
+	ctx.Cookie(&fiber.Cookie{
+		Name:     api.JwtCookieName,
+		Value:    token,
+		Path:     api.JwtCookiePath,
+		MaxAge:   0,
+		SameSite: fiber.CookieSameSiteLaxMode,
 	})
+	return ctx.Send(nil)
 }

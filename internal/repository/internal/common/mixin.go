@@ -3,7 +3,8 @@ package common
 import (
 	"context"
 
-	"github.com/Ghytro/inttest-configurator/pkg/database"
+	"configurator/pkg/database"
+
 	"github.com/pkg/errors"
 	"github.com/samber/lo"
 	"go.uber.org/zap"

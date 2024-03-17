@@ -6,10 +6,11 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/Ghytro/inttest-configurator/internal/entity"
-	entAuth "github.com/Ghytro/inttest-configurator/internal/entity/auth"
-	"github.com/Ghytro/inttest-configurator/internal/repository/internal/common"
-	"github.com/Ghytro/inttest-configurator/pkg/database"
+	"configurator/internal/entity"
+	entAuth "configurator/internal/entity/auth"
+	"configurator/internal/repository/internal/common"
+	"configurator/pkg/database"
+
 	"github.com/go-pg/pg/v10"
 	"github.com/go-pg/pg/v10/orm"
 	"github.com/go-pg/pg/v10/types"

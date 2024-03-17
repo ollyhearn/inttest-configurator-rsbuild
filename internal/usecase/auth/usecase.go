@@ -3,10 +3,11 @@ package auth
 import (
 	"context"
 
-	rulesAuth "github.com/Ghytro/inttest-configurator/internal/businessrules/auth"
-	"github.com/Ghytro/inttest-configurator/internal/entity"
-	entAuth "github.com/Ghytro/inttest-configurator/internal/entity/auth"
-	"github.com/Ghytro/inttest-configurator/pkg/secrets"
+	rulesAuth "configurator/internal/businessrules/auth"
+	"configurator/internal/entity"
+	entAuth "configurator/internal/entity/auth"
+	"configurator/pkg/secrets"
+
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"

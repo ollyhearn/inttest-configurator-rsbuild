@@ -1,0 +1,9 @@
+FROM golang:1.18
+
+ADD . /dockerdev
+WORKDIR /dockerdev
+
+#RUN go mod download
+RUN go install github.com/swaggo/swag/cmd/swag@v1.8.4
+
+CMD "swag init  --parseDependency --parseInternal   -g cmd/configurator/main.go"

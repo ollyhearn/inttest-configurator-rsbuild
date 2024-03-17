@@ -1,0 +1,219 @@
+basePath: /api/v1
+definitions:
+  api.ErrResponse:
+    properties:
+      location:
+        type: string
+      message:
+        type: string
+    type: object
+  api.OK:
+    type: object
+  configurator_internal_api_auth.authRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  configurator_internal_api_auth.createUserRequest:
+    properties:
+      password:
+        type: string
+      roles:
+        items:
+          type: string
+        type: array
+      username:
+        type: string
+    type: object
+  configurator_internal_api_auth.createUserResponse:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+    type: object
+  configurator_internal_api_auth.listUsersResponseItem:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      roles:
+        items:
+          type: string
+        type: array
+      username:
+        type: string
+    type: object
+  internal_api_auth.authRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  internal_api_auth.createUserRequest:
+    properties:
+      password:
+        type: string
+      roles:
+        items:
+          type: string
+        type: array
+      username:
+        type: string
+    type: object
+  internal_api_auth.createUserResponse:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+    type: object
+  internal_api_auth.listUsersResponseItem:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      roles:
+        items:
+          type: string
+        type: array
+      username:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: |-
+    idk what to write here
+    it's just a swagger
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: IntTest configurator
+  version: "2.0"
+paths:
+  /auth:
+    post:
+      consumes:
+      - application/json
+      operationId: auth
+      parameters:
+      - description: login/pass form
+        in: body
+        name: form
+        required: true
+        schema:
+          $ref: '#/definitions/configurator_internal_api_auth.authRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.OK'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrResponse'
+      summary: create user
+      tags:
+      - users
+  /users:
+    get:
+      consumes:
+      - application/json
+      operationId: listUsers
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/configurator_internal_api_auth.listUsersResponseItem'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: create user
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      operationId: createUser
+      parameters:
+      - description: create user request model
+        in: body
+        name: form
+        required: true
+        schema:
+          $ref: '#/definitions/configurator_internal_api_auth.createUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/configurator_internal_api_auth.createUserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: create user
+      tags:
+      - users
+  /users/{id}:
+    delete:
+      consumes:
+      - application/json
+      operationId: deleteUser
+      parameters:
+      - description: id of a user to delete
+        in: path
+        name: id
+        required: true
+        type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.OK'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: delete user
+      tags:
+      - users
+swagger: "2.0"
