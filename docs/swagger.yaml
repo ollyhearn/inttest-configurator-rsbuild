@@ -22,7 +22,7 @@ definitions:
         type: string
       roles:
         items:
-          type: string
+          type: integer
         type: array
       username:
         type: string
@@ -34,6 +34,19 @@ definitions:
       id:
         type: integer
     type: object
+  configurator_internal_api_auth.listRoleResponseItem:
+    properties:
+      desc:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      perm_ids:
+        items:
+          type: integer
+        type: array
+    type: object
   configurator_internal_api_auth.listUsersResponseItem:
     properties:
       created_at:
@@ -42,10 +55,39 @@ definitions:
         type: integer
       roles:
         items:
-          type: string
+          type: integer
         type: array
       username:
         type: string
+    type: object
+  configurator_internal_api_auth.roleCreateRequest:
+    properties:
+      desc:
+        type: string
+      name:
+        type: string
+      perm_ids:
+        items:
+          type: integer
+        type: array
+    type: object
+  configurator_internal_api_auth.roleCreateResponse:
+    properties:
+      id:
+        type: integer
+    type: object
+  configurator_internal_api_auth.updateRoleRequest:
+    properties:
+      desc:
+        type: string
+      name:
+        type: string
+      perm_ids:
+        items:
+          type: integer
+        type: array
+    type: object
+  configurator_internal_api_auth.updateRoleResponse:
     type: object
   internal_api_auth.authRequest:
     properties:
@@ -60,7 +102,7 @@ definitions:
         type: string
       roles:
         items:
-          type: string
+          type: integer
         type: array
       username:
         type: string
@@ -72,6 +114,19 @@ definitions:
       id:
         type: integer
     type: object
+  internal_api_auth.listRoleResponseItem:
+    properties:
+      desc:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      perm_ids:
+        items:
+          type: integer
+        type: array
+    type: object
   internal_api_auth.listUsersResponseItem:
     properties:
       created_at:
@@ -80,10 +135,39 @@ definitions:
         type: integer
       roles:
         items:
-          type: string
+          type: integer
         type: array
       username:
         type: string
+    type: object
+  internal_api_auth.roleCreateRequest:
+    properties:
+      desc:
+        type: string
+      name:
+        type: string
+      perm_ids:
+        items:
+          type: integer
+        type: array
+    type: object
+  internal_api_auth.roleCreateResponse:
+    properties:
+      id:
+        type: integer
+    type: object
+  internal_api_auth.updateRoleRequest:
+    properties:
+      desc:
+        type: string
+      name:
+        type: string
+      perm_ids:
+        items:
+          type: integer
+        type: array
+    type: object
+  internal_api_auth.updateRoleResponse:
     type: object
 info:
   contact: {}
@@ -125,6 +209,131 @@ paths:
           schema:
             $ref: '#/definitions/api.ErrResponse'
       summary: create user
+      tags:
+      - users
+  /roles:
+    get:
+      consumes:
+      - application/json
+      operationId: listRoles
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/configurator_internal_api_auth.listRoleResponseItem'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: list all the roles in the system
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      operationId: createRole
+      parameters:
+      - description: create role form
+        in: body
+        name: form
+        required: true
+        schema:
+          $ref: '#/definitions/configurator_internal_api_auth.roleCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/configurator_internal_api_auth.roleCreateResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: create role
+      tags:
+      - users
+  /roles/{id}:
+    delete:
+      consumes:
+      - application/json
+      operationId: deleteRole
+      parameters:
+      - description: id of a role to delete
+        in: path
+        name: id
+        required: true
+        type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.OK'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: delete role
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      operationId: updateRole
+      parameters:
+      - description: id of a role to update
+        in: path
+        name: id
+        required: true
+        type: number
+      - description: new role data to store
+        in: body
+        name: form
+        required: true
+        schema:
+          $ref: '#/definitions/configurator_internal_api_auth.updateRoleRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/configurator_internal_api_auth.updateRoleResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: update role
       tags:
       - users
   /users:

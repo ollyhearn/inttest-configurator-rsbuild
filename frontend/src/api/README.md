@@ -122,9 +122,13 @@ All URIs are relative to */api/v1*
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
 *IntTestConfigurator.UsersApi* | [**auth**](docs/UsersApi.md#auth) | **POST** /auth | create user
+*IntTestConfigurator.UsersApi* | [**createRole**](docs/UsersApi.md#createRole) | **POST** /roles | create role
 *IntTestConfigurator.UsersApi* | [**createUser**](docs/UsersApi.md#createUser) | **POST** /users | create user
+*IntTestConfigurator.UsersApi* | [**deleteRole**](docs/UsersApi.md#deleteRole) | **DELETE** /roles/{id} | delete role
 *IntTestConfigurator.UsersApi* | [**deleteUser**](docs/UsersApi.md#deleteUser) | **DELETE** /users/{id} | delete user
+*IntTestConfigurator.UsersApi* | [**listRoles**](docs/UsersApi.md#listRoles) | **GET** /roles | list all the roles in the system
 *IntTestConfigurator.UsersApi* | [**listUsers**](docs/UsersApi.md#listUsers) | **GET** /users | create user
+*IntTestConfigurator.UsersApi* | [**updateRole**](docs/UsersApi.md#updateRole) | **PUT** /roles/{id} | update role
 
 
 ## Documentation for Models
@@ -133,11 +137,19 @@ Class | Method | HTTP request | Description
  - [IntTestConfigurator.ConfiguratorInternalApiAuthAuthRequest](docs/ConfiguratorInternalApiAuthAuthRequest.md)
  - [IntTestConfigurator.ConfiguratorInternalApiAuthCreateUserRequest](docs/ConfiguratorInternalApiAuthCreateUserRequest.md)
  - [IntTestConfigurator.ConfiguratorInternalApiAuthCreateUserResponse](docs/ConfiguratorInternalApiAuthCreateUserResponse.md)
+ - [IntTestConfigurator.ConfiguratorInternalApiAuthListRoleResponseItem](docs/ConfiguratorInternalApiAuthListRoleResponseItem.md)
  - [IntTestConfigurator.ConfiguratorInternalApiAuthListUsersResponseItem](docs/ConfiguratorInternalApiAuthListUsersResponseItem.md)
+ - [IntTestConfigurator.ConfiguratorInternalApiAuthRoleCreateRequest](docs/ConfiguratorInternalApiAuthRoleCreateRequest.md)
+ - [IntTestConfigurator.ConfiguratorInternalApiAuthRoleCreateResponse](docs/ConfiguratorInternalApiAuthRoleCreateResponse.md)
+ - [IntTestConfigurator.ConfiguratorInternalApiAuthUpdateRoleRequest](docs/ConfiguratorInternalApiAuthUpdateRoleRequest.md)
  - [IntTestConfigurator.InternalApiAuthAuthRequest](docs/InternalApiAuthAuthRequest.md)
  - [IntTestConfigurator.InternalApiAuthCreateUserRequest](docs/InternalApiAuthCreateUserRequest.md)
  - [IntTestConfigurator.InternalApiAuthCreateUserResponse](docs/InternalApiAuthCreateUserResponse.md)
+ - [IntTestConfigurator.InternalApiAuthListRoleResponseItem](docs/InternalApiAuthListRoleResponseItem.md)
  - [IntTestConfigurator.InternalApiAuthListUsersResponseItem](docs/InternalApiAuthListUsersResponseItem.md)
+ - [IntTestConfigurator.InternalApiAuthRoleCreateRequest](docs/InternalApiAuthRoleCreateRequest.md)
+ - [IntTestConfigurator.InternalApiAuthRoleCreateResponse](docs/InternalApiAuthRoleCreateResponse.md)
+ - [IntTestConfigurator.InternalApiAuthUpdateRoleRequest](docs/InternalApiAuthUpdateRoleRequest.md)
 
 
 ## Documentation for Authorization

@@ -51,7 +51,7 @@ class InternalApiAuthCreateUserRequest {
                 obj['password'] = ApiClient.convertToType(data['password'], 'String');
             }
             if (data.hasOwnProperty('roles')) {
-                obj['roles'] = ApiClient.convertToType(data['roles'], ['String']);
+                obj['roles'] = ApiClient.convertToType(data['roles'], ['Number']);
             }
             if (data.hasOwnProperty('username')) {
                 obj['username'] = ApiClient.convertToType(data['username'], 'String');
@@ -69,7 +69,7 @@ class InternalApiAuthCreateUserRequest {
 InternalApiAuthCreateUserRequest.prototype['password'] = undefined;
 
 /**
- * @member {Array.<String>} roles
+ * @member {Array.<Number>} roles
  */
 InternalApiAuthCreateUserRequest.prototype['roles'] = undefined;
 

@@ -5,7 +5,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **password** | **String** |  | [optional] 
-**roles** | **[String]** |  | [optional] 
+**roles** | **[Number]** |  | [optional] 
 **username** | **String** |  | [optional] 
 
 

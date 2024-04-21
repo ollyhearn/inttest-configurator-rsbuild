@@ -6,7 +6,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **createdAt** | **String** |  | [optional] 
 **id** | **Number** |  | [optional] 
-**roles** | **[String]** |  | [optional] 
+**roles** | **[Number]** |  | [optional] 
 **username** | **String** |  | [optional] 
 
 

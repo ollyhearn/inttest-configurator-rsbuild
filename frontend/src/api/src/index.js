@@ -17,11 +17,19 @@ import ApiErrResponse from './model/ApiErrResponse';
 import ConfiguratorInternalApiAuthAuthRequest from './model/ConfiguratorInternalApiAuthAuthRequest';
 import ConfiguratorInternalApiAuthCreateUserRequest from './model/ConfiguratorInternalApiAuthCreateUserRequest';
 import ConfiguratorInternalApiAuthCreateUserResponse from './model/ConfiguratorInternalApiAuthCreateUserResponse';
+import ConfiguratorInternalApiAuthListRoleResponseItem from './model/ConfiguratorInternalApiAuthListRoleResponseItem';
 import ConfiguratorInternalApiAuthListUsersResponseItem from './model/ConfiguratorInternalApiAuthListUsersResponseItem';
+import ConfiguratorInternalApiAuthRoleCreateRequest from './model/ConfiguratorInternalApiAuthRoleCreateRequest';
+import ConfiguratorInternalApiAuthRoleCreateResponse from './model/ConfiguratorInternalApiAuthRoleCreateResponse';
+import ConfiguratorInternalApiAuthUpdateRoleRequest from './model/ConfiguratorInternalApiAuthUpdateRoleRequest';
 import InternalApiAuthAuthRequest from './model/InternalApiAuthAuthRequest';
 import InternalApiAuthCreateUserRequest from './model/InternalApiAuthCreateUserRequest';
 import InternalApiAuthCreateUserResponse from './model/InternalApiAuthCreateUserResponse';
+import InternalApiAuthListRoleResponseItem from './model/InternalApiAuthListRoleResponseItem';
 import InternalApiAuthListUsersResponseItem from './model/InternalApiAuthListUsersResponseItem';
+import InternalApiAuthRoleCreateRequest from './model/InternalApiAuthRoleCreateRequest';
+import InternalApiAuthRoleCreateResponse from './model/InternalApiAuthRoleCreateResponse';
+import InternalApiAuthUpdateRoleRequest from './model/InternalApiAuthUpdateRoleRequest';
 import UsersApi from './api/UsersApi';
 
 
@@ -88,10 +96,34 @@ export {
     ConfiguratorInternalApiAuthCreateUserResponse,
 
     /**
+     * The ConfiguratorInternalApiAuthListRoleResponseItem model constructor.
+     * @property {module:model/ConfiguratorInternalApiAuthListRoleResponseItem}
+     */
+    ConfiguratorInternalApiAuthListRoleResponseItem,
+
+    /**
      * The ConfiguratorInternalApiAuthListUsersResponseItem model constructor.
      * @property {module:model/ConfiguratorInternalApiAuthListUsersResponseItem}
      */
     ConfiguratorInternalApiAuthListUsersResponseItem,
+
+    /**
+     * The ConfiguratorInternalApiAuthRoleCreateRequest model constructor.
+     * @property {module:model/ConfiguratorInternalApiAuthRoleCreateRequest}
+     */
+    ConfiguratorInternalApiAuthRoleCreateRequest,
+
+    /**
+     * The ConfiguratorInternalApiAuthRoleCreateResponse model constructor.
+     * @property {module:model/ConfiguratorInternalApiAuthRoleCreateResponse}
+     */
+    ConfiguratorInternalApiAuthRoleCreateResponse,
+
+    /**
+     * The ConfiguratorInternalApiAuthUpdateRoleRequest model constructor.
+     * @property {module:model/ConfiguratorInternalApiAuthUpdateRoleRequest}
+     */
+    ConfiguratorInternalApiAuthUpdateRoleRequest,
 
     /**
      * The InternalApiAuthAuthRequest model constructor.
@@ -112,10 +144,34 @@ export {
     InternalApiAuthCreateUserResponse,
 
     /**
+     * The InternalApiAuthListRoleResponseItem model constructor.
+     * @property {module:model/InternalApiAuthListRoleResponseItem}
+     */
+    InternalApiAuthListRoleResponseItem,
+
+    /**
      * The InternalApiAuthListUsersResponseItem model constructor.
      * @property {module:model/InternalApiAuthListUsersResponseItem}
      */
     InternalApiAuthListUsersResponseItem,
+
+    /**
+     * The InternalApiAuthRoleCreateRequest model constructor.
+     * @property {module:model/InternalApiAuthRoleCreateRequest}
+     */
+    InternalApiAuthRoleCreateRequest,
+
+    /**
+     * The InternalApiAuthRoleCreateResponse model constructor.
+     * @property {module:model/InternalApiAuthRoleCreateResponse}
+     */
+    InternalApiAuthRoleCreateResponse,
+
+    /**
+     * The InternalApiAuthUpdateRoleRequest model constructor.
+     * @property {module:model/InternalApiAuthUpdateRoleRequest}
+     */
+    InternalApiAuthUpdateRoleRequest,
 
     /**
     * The UsersApi service constructor.

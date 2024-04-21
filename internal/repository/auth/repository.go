@@ -11,7 +11,6 @@ import (
 	"configurator/internal/repository/internal/common"
 	"configurator/pkg/database"
 
-	"github.com/go-pg/pg/v10"
 	"github.com/go-pg/pg/v10/orm"
 	"github.com/go-pg/pg/v10/types"
 	"github.com/samber/lo"
@@ -73,13 +72,13 @@ func (r *Repository) ListUsers(ctx context.Context, fetchRoles bool) (result []e
 	return result, nil
 }
 
-func (r *Repository) CreateUser(ctx context.Context, user entAuth.User, assignedRoles ...string) (entAuth.User, error) {
+func (r *Repository) CreateUser(ctx context.Context, user entAuth.User, assignedRoleIds ...entity.BigIntPK) (entAuth.User, error) {
 	const errDesc = "ошибка создания пользователя"
 
-	assignedRoles = lo.Uniq(assignedRoles)
+	assignedRoleIds = lo.Uniq(assignedRoleIds)
 
 	err := r.DB.RunInTransaction(ctx, func(db orm.DB) error {
-		if err := r.createUserPreconds(ctx, user, assignedRoles...); err != nil {
+		if err := r.createUserPreconds(ctx, user, assignedRoleIds...); err != nil {
 			return errors.Wrap(err, errDesc)
 		}
 
@@ -98,16 +97,11 @@ func (r *Repository) CreateUser(ctx context.Context, user entAuth.User, assigned
 			return errors.New("попробуйте позже")
 		}
 
-		if len(assignedRoles) > 0 {
-			var roles []*entAuth.Role
-			if err := db.Model(&roles).WhereIn("name IN (?)", assignedRoles).Select(); err != nil {
-				r.Log.Error(err)
-				return errors.New("получение списка ролей")
-			}
-			userRoles := lo.Map(roles, func(r *entAuth.Role, _ int) *entAuth.UserRole {
+		if len(assignedRoleIds) > 0 {
+			userRoles := lo.Map(assignedRoleIds, func(roleId entity.BigIntPK, _ int) *entAuth.UserRole {
 				return &entAuth.UserRole{
 					UserId: user.Id,
-					RoleId: r.Id,
+					RoleId: roleId,
 				}
 			})
 			if _, err := db.Model(&userRoles).Insert(); err != nil {
@@ -121,6 +115,30 @@ func (r *Repository) CreateUser(ctx context.Context, user entAuth.User, assigned
 		return entAuth.User{}, errors.Wrap(err, "ошибка создания пользователя")
 	}
 	return user, nil
+}
+
+func (r *Repository) createUserPreconds(ctx context.Context, user entAuth.User, assignedRoleIds ...entity.BigIntPK) error {
+	return r.DB.RunInTransaction(ctx, func(db orm.DB) error {
+		var users []*entAuth.User
+		if err := db.Model(&users).Where("username=?", user.UserName).Select(); err != nil {
+			return err
+		}
+		if len(users) != 0 {
+			return errors.New("имя пользователя обязано быть уникальным в системе")
+		}
+
+		if len(assignedRoleIds) > 0 {
+			rolesCount, err := db.Model((*entAuth.Role)(nil)).WhereIn("id IN (?)", assignedRoleIds).Count()
+			if err != nil {
+				r.Log.Error(err)
+				return errors.New("получение списка ролей")
+			}
+			if rolesCount != len(assignedRoleIds) {
+				return errors.New("имеются некорректные значения назначаемых ролей")
+			}
+		}
+		return nil
+	})
 }
 
 func (r *Repository) IsAuth(ctx context.Context, username, password string) error {
@@ -156,36 +174,11 @@ func (r *Repository) AuthUser(ctx context.Context, username, password string) (r
 
 func (r *Repository) DeleteUser(ctx context.Context, id entity.BigIntPK) error {
 	return r.DB.RunInTransaction(ctx, func(db orm.DB) error {
-		if _, err := db.Exec("DELETE FROM users WHERE id=?", id); err != nil {
+		if _, err := db.Model((*entAuth.UserRole)(nil)).Where("user_id = ?").Delete(); err != nil {
 			return err
 		}
-		return nil
-	})
-}
-
-func (r *Repository) createUserPreconds(ctx context.Context, user entAuth.User, assignedRoles ...string) error {
-	return r.DB.RunInTransaction(ctx, func(db orm.DB) error {
-		var users []*entAuth.User
-		if err := db.Model(&users).Where("username=?", user.UserName).Select(); err != nil {
+		if _, err := db.Model(&entAuth.User{Id: id}).WherePK().Delete(); err != nil {
 			return err
-		}
-		if len(users) != 0 {
-			return errors.New("имя пользователя обязано быть уникальным в системе")
-		}
-
-		if len(assignedRoles) > 0 {
-			var rolesCount int
-			if _, err := db.Query(
-				pg.Scan(&rolesCount),
-				"SELECT COUNT(*) FROM roles WHERE name IN (?)",
-				pg.In(assignedRoles),
-			); err != nil {
-				r.Log.Error(err)
-				return errors.New("получение списка ролей")
-			}
-			if rolesCount != len(assignedRoles) {
-				return errors.New("имеются некорректные значения назначаемых ролей")
-			}
 		}
 		return nil
 	})
@@ -206,4 +199,161 @@ func (r *Repository) GetRolePerms(ctx context.Context, roleId entity.BigIntPK) (
 		return nil, err
 	}
 	return result, nil
+}
+
+func (r *Repository) UpdateUser(ctx context.Context, model entAuth.User) (result entAuth.User, err error) {
+	err = r.DB.RunInTransaction(ctx, func(db orm.DB) error {
+		result = model
+		if _, err := db.Model(&result).WherePK().Returning("*").Update(); err != nil {
+			return err
+		}
+		return nil
+	})
+	if err != nil {
+		return entAuth.User{}, err
+	}
+	return result, nil
+}
+
+func (r *Repository) UpdateUserRoles(
+	ctx context.Context,
+	user entAuth.User,
+	newRoleIDs ...entity.BigIntPK,
+) (updated entAuth.User, err error) {
+	newRoleIDs = lo.Uniq(newRoleIDs)
+	err = r.DB.RunInTransaction(ctx, func(db orm.DB) error {
+		// посмотрим что все переданные новые идшники корректные
+		roleCount, err := db.Model((*entAuth.Role)(nil)).WhereIn("id IN (?)", newRoleIDs).Count()
+		if err != nil {
+			return err
+		}
+		if roleCount != len(newRoleIDs) {
+			return errors.New("переданы ошибочные идентификаторы новых ролей")
+		}
+		if _, err := db.Model((*entAuth.UserRole)(nil)).Where("user_id = ?", user.Id).Delete(); err != nil {
+			return err
+		}
+		newUserRoles := lo.Map(newRoleIDs, func(roleId entity.BigIntPK, _ int) *entAuth.UserRole {
+			return &entAuth.UserRole{
+				UserId: user.Id,
+				RoleId: roleId,
+			}
+		})
+		if _, err := db.Model(newUserRoles).Insert(); err != nil {
+			return err
+		}
+		return nil
+	})
+	if err != nil {
+		return entAuth.User{}, err
+	}
+	return user, nil
+}
+
+func (r *Repository) CreateRole(ctx context.Context, role entAuth.Role, permIds ...entity.BigIntPK) (result entAuth.Role, err error) {
+	err = r.DB.RunInTransaction(ctx, func(db orm.DB) error {
+		result = role
+		_, err := db.Model(&result).Returning("*").Insert()
+		if err != nil {
+			return err
+		}
+		if len(permIds) != 0 {
+			rolePerms := lo.Map(permIds, func(permId entity.BigIntPK, _ int) *entAuth.RolePermission {
+				return &entAuth.RolePermission{
+					RoleId: role.Id,
+					PermId: permId,
+				}
+			})
+			if _, err := db.Model(rolePerms).Insert(); err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+	if err != nil {
+		return entAuth.Role{}, err
+	}
+	return result, nil
+}
+
+func (r *Repository) ListRoles(ctx context.Context, fetchPerms bool) (result []entAuth.Role, err error) {
+	err = r.DB.RunInTransaction(ctx, func(db orm.DB) error {
+		q := db.Model(&result)
+		if fetchPerms {
+			q.Relation("Perms")
+		}
+		if err := q.Select(); err != nil {
+			return err
+		}
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
+func (r *Repository) ListPerms(ctx context.Context) (result []entAuth.Perm, err error) {
+	err = r.DB.RunInTransaction(ctx, func(db orm.DB) error {
+		return db.Model(&result).Select()
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
+func (r *Repository) UpdateRole(ctx context.Context, role entAuth.Role) (result entAuth.Role, err error) {
+	err = r.DB.RunInTransaction(ctx, func(db orm.DB) error {
+		result = role
+		if _, err := db.Model(&result).WherePK().Returning("*").Update(); err != nil {
+			return err
+		}
+
+		return nil
+	})
+	if err != nil {
+		return entAuth.Role{}, err
+	}
+	return result, nil
+}
+
+func (r *Repository) UpdateRolePerms(ctx context.Context, role entAuth.Role, newPermIds ...entity.BigIntPK) (result entAuth.Role, err error) {
+	err = r.DB.RunInTransaction(ctx, func(db orm.DB) error {
+		if _, err := db.Model((*entAuth.RolePermission)(nil)).Where("role_id = ?", role.Id).Delete(); err != nil {
+			return err
+		}
+		rolePerms := lo.Map(newPermIds, func(permId entity.BigIntPK, _ int) *entAuth.RolePermission {
+			return &entAuth.RolePermission{
+				RoleId: role.Id,
+				PermId: permId,
+			}
+		})
+		if _, err := db.Model(rolePerms).Insert(); err != nil {
+			return err
+		}
+		return nil
+	})
+	if err != nil {
+		return entAuth.Role{}, err
+	}
+	return result, nil
+}
+
+func (r *Repository) DeleteRole(ctx context.Context, id entity.BigIntPK) error {
+	return r.DB.RunInTransaction(ctx, func(db orm.DB) error {
+		model := entAuth.Role{
+			Id: id,
+		}
+		if _, err := db.Model((*entAuth.RolePermission)(nil)).Where("role_id = ?", id).Delete(); err != nil {
+			return err
+		}
+		if _, err := db.Model((*entAuth.UserRole)(nil)).Where("role_id = ?", id).Delete(); err != nil {
+			return err
+		}
+		if _, err := db.Model(&model).WherePK().Delete(); err != nil {
+			return err
+		}
+		return nil
+	})
 }

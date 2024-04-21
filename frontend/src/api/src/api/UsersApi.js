@@ -17,7 +17,11 @@ import ApiErrResponse from '../model/ApiErrResponse';
 import ConfiguratorInternalApiAuthAuthRequest from '../model/ConfiguratorInternalApiAuthAuthRequest';
 import ConfiguratorInternalApiAuthCreateUserRequest from '../model/ConfiguratorInternalApiAuthCreateUserRequest';
 import ConfiguratorInternalApiAuthCreateUserResponse from '../model/ConfiguratorInternalApiAuthCreateUserResponse';
+import ConfiguratorInternalApiAuthListRoleResponseItem from '../model/ConfiguratorInternalApiAuthListRoleResponseItem';
 import ConfiguratorInternalApiAuthListUsersResponseItem from '../model/ConfiguratorInternalApiAuthListUsersResponseItem';
+import ConfiguratorInternalApiAuthRoleCreateRequest from '../model/ConfiguratorInternalApiAuthRoleCreateRequest';
+import ConfiguratorInternalApiAuthRoleCreateResponse from '../model/ConfiguratorInternalApiAuthRoleCreateResponse';
+import ConfiguratorInternalApiAuthUpdateRoleRequest from '../model/ConfiguratorInternalApiAuthUpdateRoleRequest';
 
 /**
 * Users service.
@@ -80,6 +84,47 @@ export default class UsersApi {
     }
 
     /**
+     * Callback function to receive the result of the createRole operation.
+     * @callback module:api/UsersApi~createRoleCallback
+     * @param {String} error Error message, if any.
+     * @param {module:model/ConfiguratorInternalApiAuthRoleCreateResponse} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * create role
+     * @param {module:model/ConfiguratorInternalApiAuthRoleCreateRequest} form create role form
+     * @param {module:api/UsersApi~createRoleCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link module:model/ConfiguratorInternalApiAuthRoleCreateResponse}
+     */
+    createRole(form, callback) {
+      let postBody = form;
+      // verify the required parameter 'form' is set
+      if (form === undefined || form === null) {
+        throw new Error("Missing the required parameter 'form' when calling createRole");
+      }
+
+      let pathParams = {
+      };
+      let queryParams = {
+      };
+      let headerParams = {
+      };
+      let formParams = {
+      };
+
+      let authNames = [];
+      let contentTypes = ['application/json'];
+      let accepts = ['application/json'];
+      let returnType = ConfiguratorInternalApiAuthRoleCreateResponse;
+      return this.apiClient.callApi(
+        '/roles', 'POST',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType, null, callback
+      );
+    }
+
+    /**
      * Callback function to receive the result of the createUser operation.
      * @callback module:api/UsersApi~createUserCallback
      * @param {String} error Error message, if any.
@@ -115,6 +160,48 @@ export default class UsersApi {
       let returnType = ConfiguratorInternalApiAuthCreateUserResponse;
       return this.apiClient.callApi(
         '/users', 'POST',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType, null, callback
+      );
+    }
+
+    /**
+     * Callback function to receive the result of the deleteRole operation.
+     * @callback module:api/UsersApi~deleteRoleCallback
+     * @param {String} error Error message, if any.
+     * @param {Object} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * delete role
+     * @param {Number} id id of a role to delete
+     * @param {module:api/UsersApi~deleteRoleCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link Object}
+     */
+    deleteRole(id, callback) {
+      let postBody = null;
+      // verify the required parameter 'id' is set
+      if (id === undefined || id === null) {
+        throw new Error("Missing the required parameter 'id' when calling deleteRole");
+      }
+
+      let pathParams = {
+        'id': id
+      };
+      let queryParams = {
+      };
+      let headerParams = {
+      };
+      let formParams = {
+      };
+
+      let authNames = [];
+      let contentTypes = [];
+      let accepts = ['application/json'];
+      let returnType = Object;
+      return this.apiClient.callApi(
+        '/roles/{id}', 'DELETE',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, null, callback
       );
@@ -163,6 +250,42 @@ export default class UsersApi {
     }
 
     /**
+     * Callback function to receive the result of the listRoles operation.
+     * @callback module:api/UsersApi~listRolesCallback
+     * @param {String} error Error message, if any.
+     * @param {Array.<module:model/ConfiguratorInternalApiAuthListRoleResponseItem>} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * list all the roles in the system
+     * @param {module:api/UsersApi~listRolesCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link Array.<module:model/ConfiguratorInternalApiAuthListRoleResponseItem>}
+     */
+    listRoles(callback) {
+      let postBody = null;
+
+      let pathParams = {
+      };
+      let queryParams = {
+      };
+      let headerParams = {
+      };
+      let formParams = {
+      };
+
+      let authNames = [];
+      let contentTypes = [];
+      let accepts = ['application/json'];
+      let returnType = [ConfiguratorInternalApiAuthListRoleResponseItem];
+      return this.apiClient.callApi(
+        '/roles', 'GET',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType, null, callback
+      );
+    }
+
+    /**
      * Callback function to receive the result of the listUsers operation.
      * @callback module:api/UsersApi~listUsersCallback
      * @param {String} error Error message, if any.
@@ -193,6 +316,53 @@ export default class UsersApi {
       let returnType = [ConfiguratorInternalApiAuthListUsersResponseItem];
       return this.apiClient.callApi(
         '/users', 'GET',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType, null, callback
+      );
+    }
+
+    /**
+     * Callback function to receive the result of the updateRole operation.
+     * @callback module:api/UsersApi~updateRoleCallback
+     * @param {String} error Error message, if any.
+     * @param {Object} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * update role
+     * @param {Number} id id of a role to update
+     * @param {module:model/ConfiguratorInternalApiAuthUpdateRoleRequest} form new role data to store
+     * @param {module:api/UsersApi~updateRoleCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link Object}
+     */
+    updateRole(id, form, callback) {
+      let postBody = form;
+      // verify the required parameter 'id' is set
+      if (id === undefined || id === null) {
+        throw new Error("Missing the required parameter 'id' when calling updateRole");
+      }
+      // verify the required parameter 'form' is set
+      if (form === undefined || form === null) {
+        throw new Error("Missing the required parameter 'form' when calling updateRole");
+      }
+
+      let pathParams = {
+        'id': id
+      };
+      let queryParams = {
+      };
+      let headerParams = {
+      };
+      let formParams = {
+      };
+
+      let authNames = [];
+      let contentTypes = ['application/json'];
+      let accepts = ['application/json'];
+      let returnType = Object;
+      return this.apiClient.callApi(
+        '/roles/{id}', 'PUT',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, null, callback
       );

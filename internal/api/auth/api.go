@@ -6,7 +6,6 @@ import (
 	"configurator/internal/api"
 	"configurator/internal/entity"
 	entAuth "configurator/internal/entity/auth"
-	"configurator/internal/usecase/auth"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/samber/lo"
@@ -15,10 +14,10 @@ import (
 
 type API struct {
 	log     *zap.SugaredLogger
-	useCase *auth.UseCase // пока без интерфейса обойдусь
+	useCase IUseCase
 }
 
-func New(log *zap.SugaredLogger, useCase *auth.UseCase) *API {
+func New(log *zap.SugaredLogger, useCase IUseCase) *API {
 	return &API{
 		log:     log.With(zap.String("api", "auth_api")),
 		useCase: useCase,
@@ -31,17 +30,25 @@ func (a *API) Register(router fiber.Router, authMiddleware fiber.Handler, middle
 	router.Mount("/auth", r)
 
 	r = fiber.New()
-
 	r.Use("/users", authMiddleware)
 	for _, m := range middlewares {
 		r.Use(m)
 	}
-
 	r.Get("/", a.listUsers)
 	r.Post("/", a.createUser)
 	r.Delete("/:id", a.deleteUser)
-
 	router.Mount("/users", r)
+
+	r = fiber.New()
+	r.Use("/roles", authMiddleware)
+	for _, m := range middlewares {
+		r.Use(m)
+	}
+	r.Get("/", a.listRoles)
+	r.Post("/", a.createRole)
+	r.Put("/:id", a.updateRole)
+	r.Delete("/:id", a.deleteRole)
+	router.Mount("/roles", r)
 }
 
 // createUser godoc
@@ -134,8 +141,8 @@ func (a *API) listUsers(ctx *fiber.Ctx) error {
 			Id:        u.Id,
 			UserName:  u.UserName,
 			CreatedAt: u.CreatedAt,
-			Roles: lo.Map(u.Roles, func(r entAuth.Role, _ int) string {
-				return r.Name
+			Roles: lo.Map(u.Roles, func(r entAuth.Role, _ int) entity.BigIntPK {
+				return r.Id
 			}),
 		}
 	}))
@@ -169,4 +176,137 @@ func (a *API) auth(ctx *fiber.Ctx) error {
 		SameSite: fiber.CookieSameSiteLaxMode,
 	})
 	return ctx.Send(nil)
+}
+
+// createRole godoc
+// @ID createRole
+// @Summary create role
+// @Tags users
+// @Accept json
+// @Produce json
+// @Success 200 {object} roleCreateResponse
+// @Failure 400 {object} api.ErrResponse
+// @Failure 500 {object} api.ErrResponse
+// @Security ApiKeyAuth
+// @Param form body roleCreateRequest true "create role form"
+// @Router /roles [post]
+func (a *API) createRole(ctx *fiber.Ctx) error {
+	user, ok := api.GetUserEntity(ctx)
+	if !ok {
+		return errors.New("user unauthorized")
+	}
+	var model roleCreateRequest
+	if err := ctx.BodyParser(&model); err != nil {
+		return err
+	}
+	createdRole := entAuth.Role{
+		Name: model.Name,
+		Desc: model.Desc,
+	}
+	result, err := a.useCase.CreateRole(ctx.Context(), user.Id, createdRole, model.PermIds...)
+	if err != nil {
+		return err
+	}
+	return ctx.JSON(roleCreateResponse{
+		Id: result.Id,
+	})
+}
+
+// listRoles godoc
+// @ID listRoles
+// @Summary list all the roles in the system
+// @Tags users
+// @Accept json
+// @Produce json
+// @Success 200 {array} listRoleResponseItem
+// @Failure 400 {object} api.ErrResponse
+// @Failure 500 {object} api.ErrResponse
+// @Security ApiKeyAuth
+// @Router /roles [get]
+func (a *API) listRoles(ctx *fiber.Ctx) error {
+	user, ok := api.GetUserEntity(ctx)
+	if !ok {
+		return errors.New("user unauthorized")
+	}
+
+	result, err := a.useCase.ListRoles(ctx.Context(), user.Id)
+	if err != nil {
+		return err
+	}
+	resp := lo.Map(result, func(r entAuth.Role, _ int) listRoleResponseItem {
+		return listRoleResponseItem{
+			Id:      r.Id,
+			Name:    r.Name,
+			Desc:    r.Desc,
+			PermIds: lo.Map(r.Perms, func(p entAuth.Perm, _ int) entity.BigIntPK { return p.Id }),
+		}
+	})
+	return ctx.JSON(resp)
+}
+
+// updateRole godoc
+// @ID updateRole
+// @Summary update role
+// @Tags users
+// @Accept json
+// @Produce json
+// @Success 200 {object} updateRoleResponse
+// @Failure 400 {object} api.ErrResponse
+// @Failure 500 {object} api.ErrResponse
+// @Param id path number true "id of a role to update"
+// @Param form body updateRoleRequest true "new role data to store"
+// @Security ApiKeyAuth
+// @Router /roles/{id} [put]
+func (a *API) updateRole(ctx *fiber.Ctx) error {
+	user, ok := api.GetUserEntity(ctx)
+	if !ok {
+		return errors.New("user unauthorized")
+	}
+
+	roleId, err := entity.ParseBigIntPK(ctx.Params("id"))
+	if err != nil {
+		return err
+	}
+
+	var model updateRoleRequest
+	if err := ctx.BodyParser(&model); err != nil {
+		return err
+	}
+
+	_, err = a.useCase.UpdateRole(ctx.Context(), user.Id, roleId, model.Name, model.PermIds...)
+	if err != nil {
+		return err
+	}
+
+	return ctx.JSON(updateRoleResponse{})
+}
+
+// deleteRole godoc
+// @ID deleteRole
+// @Summary delete role
+// @Tags users
+// @Accept json
+// @Produce json
+// @Success 200 {object} api.OK
+// @Failure 400 {object} api.ErrResponse
+// @Failure 500 {object} api.ErrResponse
+// @Security ApiKeyAuth
+// @Param id path number true "id of a role to delete"
+// @Router /roles/{id} [delete]
+func (a *API) deleteRole(ctx *fiber.Ctx) error {
+	user, ok := api.GetUserEntity(ctx)
+	if !ok {
+		return errors.New("user unauthorized")
+	}
+
+	roleId, err := entity.ParseBigIntPK(ctx.Params("id"))
+	if err != nil {
+		return err
+	}
+
+	if err := a.useCase.DeleteRole(ctx.Context(), user.Id, roleId); err != nil {
+		return err
+	}
+
+	return ctx.JSON(api.OK{})
 }
