@@ -9,9 +9,11 @@ Method | HTTP request | Description
 [**createUser**](UsersApi.md#createUser) | **POST** /users | create user
 [**deleteRole**](UsersApi.md#deleteRole) | **DELETE** /roles/{id} | delete role
 [**deleteUser**](UsersApi.md#deleteUser) | **DELETE** /users/{id} | delete user
+[**listPerms**](UsersApi.md#listPerms) | **GET** /perms | list all the perms in the system
 [**listRoles**](UsersApi.md#listRoles) | **GET** /roles | list all the roles in the system
 [**listUsers**](UsersApi.md#listUsers) | **GET** /users | create user
 [**updateRole**](UsersApi.md#updateRole) | **PUT** /roles/{id} | update role
+[**updateUser**](UsersApi.md#updateUser) | **PUT** /users/{id} | update user
 
 
 
@@ -230,6 +232,45 @@ No authorization required
 - **Accept**: application/json
 
 
+## listPerms
+
+> [ConfiguratorInternalApiAuthListPermResponseItem] listPerms()
+
+list all the perms in the system
+
+### Example
+
+```javascript
+import IntTestConfigurator from 'int_test_configurator';
+
+let apiInstance = new IntTestConfigurator.UsersApi();
+apiInstance.listPerms((error, data, response) => {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+});
+```
+
+### Parameters
+
+This endpoint does not need any parameter.
+
+### Return type
+
+[**[ConfiguratorInternalApiAuthListPermResponseItem]**](ConfiguratorInternalApiAuthListPermResponseItem.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json
+
+
 ## listRoles
 
 > [ConfiguratorInternalApiAuthListRoleResponseItem] listRoles()
@@ -338,6 +379,51 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **id** | **Number**| id of a role to update | 
  **form** | [**ConfiguratorInternalApiAuthUpdateRoleRequest**](ConfiguratorInternalApiAuthUpdateRoleRequest.md)| new role data to store | 
+
+### Return type
+
+**Object**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json
+
+
+## updateUser
+
+> Object updateUser(id, form)
+
+update user
+
+### Example
+
+```javascript
+import IntTestConfigurator from 'int_test_configurator';
+
+let apiInstance = new IntTestConfigurator.UsersApi();
+let id = 3.4; // Number | id of a user to update
+let form = new IntTestConfigurator.ConfiguratorInternalApiAuthUpdateUserRequest(); // ConfiguratorInternalApiAuthUpdateUserRequest | create user request model
+apiInstance.updateUser(id, form, (error, data, response) => {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+});
+```
+
+### Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **id** | **Number**| id of a user to update | 
+ **form** | [**ConfiguratorInternalApiAuthUpdateUserRequest**](ConfiguratorInternalApiAuthUpdateUserRequest.md)| create user request model | 
 
 ### Return type
 

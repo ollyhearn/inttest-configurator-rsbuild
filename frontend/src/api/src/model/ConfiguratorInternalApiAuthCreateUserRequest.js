@@ -50,8 +50,8 @@ class ConfiguratorInternalApiAuthCreateUserRequest {
             if (data.hasOwnProperty('password')) {
                 obj['password'] = ApiClient.convertToType(data['password'], 'String');
             }
-            if (data.hasOwnProperty('roles')) {
-                obj['roles'] = ApiClient.convertToType(data['roles'], ['Number']);
+            if (data.hasOwnProperty('role_ids')) {
+                obj['role_ids'] = ApiClient.convertToType(data['role_ids'], ['Number']);
             }
             if (data.hasOwnProperty('username')) {
                 obj['username'] = ApiClient.convertToType(data['username'], 'String');
@@ -69,9 +69,9 @@ class ConfiguratorInternalApiAuthCreateUserRequest {
 ConfiguratorInternalApiAuthCreateUserRequest.prototype['password'] = undefined;
 
 /**
- * @member {Array.<Number>} roles
+ * @member {Array.<Number>} role_ids
  */
-ConfiguratorInternalApiAuthCreateUserRequest.prototype['roles'] = undefined;
+ConfiguratorInternalApiAuthCreateUserRequest.prototype['role_ids'] = undefined;
 
 /**
  * @member {String} username

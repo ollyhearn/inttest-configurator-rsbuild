@@ -17,19 +17,23 @@ import ApiErrResponse from './model/ApiErrResponse';
 import ConfiguratorInternalApiAuthAuthRequest from './model/ConfiguratorInternalApiAuthAuthRequest';
 import ConfiguratorInternalApiAuthCreateUserRequest from './model/ConfiguratorInternalApiAuthCreateUserRequest';
 import ConfiguratorInternalApiAuthCreateUserResponse from './model/ConfiguratorInternalApiAuthCreateUserResponse';
+import ConfiguratorInternalApiAuthListPermResponseItem from './model/ConfiguratorInternalApiAuthListPermResponseItem';
 import ConfiguratorInternalApiAuthListRoleResponseItem from './model/ConfiguratorInternalApiAuthListRoleResponseItem';
 import ConfiguratorInternalApiAuthListUsersResponseItem from './model/ConfiguratorInternalApiAuthListUsersResponseItem';
 import ConfiguratorInternalApiAuthRoleCreateRequest from './model/ConfiguratorInternalApiAuthRoleCreateRequest';
 import ConfiguratorInternalApiAuthRoleCreateResponse from './model/ConfiguratorInternalApiAuthRoleCreateResponse';
 import ConfiguratorInternalApiAuthUpdateRoleRequest from './model/ConfiguratorInternalApiAuthUpdateRoleRequest';
+import ConfiguratorInternalApiAuthUpdateUserRequest from './model/ConfiguratorInternalApiAuthUpdateUserRequest';
 import InternalApiAuthAuthRequest from './model/InternalApiAuthAuthRequest';
 import InternalApiAuthCreateUserRequest from './model/InternalApiAuthCreateUserRequest';
 import InternalApiAuthCreateUserResponse from './model/InternalApiAuthCreateUserResponse';
+import InternalApiAuthListPermResponseItem from './model/InternalApiAuthListPermResponseItem';
 import InternalApiAuthListRoleResponseItem from './model/InternalApiAuthListRoleResponseItem';
 import InternalApiAuthListUsersResponseItem from './model/InternalApiAuthListUsersResponseItem';
 import InternalApiAuthRoleCreateRequest from './model/InternalApiAuthRoleCreateRequest';
 import InternalApiAuthRoleCreateResponse from './model/InternalApiAuthRoleCreateResponse';
 import InternalApiAuthUpdateRoleRequest from './model/InternalApiAuthUpdateRoleRequest';
+import InternalApiAuthUpdateUserRequest from './model/InternalApiAuthUpdateUserRequest';
 import UsersApi from './api/UsersApi';
 
 
@@ -96,6 +100,12 @@ export {
     ConfiguratorInternalApiAuthCreateUserResponse,
 
     /**
+     * The ConfiguratorInternalApiAuthListPermResponseItem model constructor.
+     * @property {module:model/ConfiguratorInternalApiAuthListPermResponseItem}
+     */
+    ConfiguratorInternalApiAuthListPermResponseItem,
+
+    /**
      * The ConfiguratorInternalApiAuthListRoleResponseItem model constructor.
      * @property {module:model/ConfiguratorInternalApiAuthListRoleResponseItem}
      */
@@ -126,6 +136,12 @@ export {
     ConfiguratorInternalApiAuthUpdateRoleRequest,
 
     /**
+     * The ConfiguratorInternalApiAuthUpdateUserRequest model constructor.
+     * @property {module:model/ConfiguratorInternalApiAuthUpdateUserRequest}
+     */
+    ConfiguratorInternalApiAuthUpdateUserRequest,
+
+    /**
      * The InternalApiAuthAuthRequest model constructor.
      * @property {module:model/InternalApiAuthAuthRequest}
      */
@@ -142,6 +158,12 @@ export {
      * @property {module:model/InternalApiAuthCreateUserResponse}
      */
     InternalApiAuthCreateUserResponse,
+
+    /**
+     * The InternalApiAuthListPermResponseItem model constructor.
+     * @property {module:model/InternalApiAuthListPermResponseItem}
+     */
+    InternalApiAuthListPermResponseItem,
 
     /**
      * The InternalApiAuthListRoleResponseItem model constructor.
@@ -172,6 +194,12 @@ export {
      * @property {module:model/InternalApiAuthUpdateRoleRequest}
      */
     InternalApiAuthUpdateRoleRequest,
+
+    /**
+     * The InternalApiAuthUpdateUserRequest model constructor.
+     * @property {module:model/InternalApiAuthUpdateUserRequest}
+     */
+    InternalApiAuthUpdateUserRequest,
 
     /**
     * The UsersApi service constructor.

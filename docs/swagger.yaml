@@ -20,7 +20,7 @@ definitions:
     properties:
       password:
         type: string
-      roles:
+      role_ids:
         items:
           type: integer
         type: array
@@ -33,6 +33,15 @@ definitions:
         type: string
       id:
         type: integer
+    type: object
+  configurator_internal_api_auth.listPermResponseItem:
+    properties:
+      desc:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
     type: object
   configurator_internal_api_auth.listRoleResponseItem:
     properties:
@@ -53,7 +62,7 @@ definitions:
         type: string
       id:
         type: integer
-      roles:
+      role_ids:
         items:
           type: integer
         type: array
@@ -89,6 +98,15 @@ definitions:
     type: object
   configurator_internal_api_auth.updateRoleResponse:
     type: object
+  configurator_internal_api_auth.updateUserRequest:
+    properties:
+      role_ids:
+        items:
+          type: integer
+        type: array
+      username:
+        type: string
+    type: object
   internal_api_auth.authRequest:
     properties:
       password:
@@ -100,7 +118,7 @@ definitions:
     properties:
       password:
         type: string
-      roles:
+      role_ids:
         items:
           type: integer
         type: array
@@ -113,6 +131,15 @@ definitions:
         type: string
       id:
         type: integer
+    type: object
+  internal_api_auth.listPermResponseItem:
+    properties:
+      desc:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
     type: object
   internal_api_auth.listRoleResponseItem:
     properties:
@@ -133,7 +160,7 @@ definitions:
         type: string
       id:
         type: integer
-      roles:
+      role_ids:
         items:
           type: integer
         type: array
@@ -168,6 +195,15 @@ definitions:
         type: array
     type: object
   internal_api_auth.updateRoleResponse:
+    type: object
+  internal_api_auth.updateUserRequest:
+    properties:
+      role_ids:
+        items:
+          type: integer
+        type: array
+      username:
+        type: string
     type: object
 info:
   contact: {}
@@ -209,6 +245,33 @@ paths:
           schema:
             $ref: '#/definitions/api.ErrResponse'
       summary: create user
+      tags:
+      - users
+  /perms:
+    get:
+      consumes:
+      - application/json
+      operationId: listPerms
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/configurator_internal_api_auth.listPermResponseItem'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: list all the perms in the system
       tags:
       - users
   /roles:
@@ -423,6 +486,42 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: delete user
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      operationId: updateUser
+      parameters:
+      - description: create user request model
+        in: body
+        name: form
+        required: true
+        schema:
+          $ref: '#/definitions/configurator_internal_api_auth.updateUserRequest'
+      - description: id of a user to update
+        in: path
+        name: id
+        required: true
+        type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.OK'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: update user
       tags:
       - users
 swagger: "2.0"

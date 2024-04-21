@@ -53,8 +53,8 @@ class ConfiguratorInternalApiAuthListUsersResponseItem {
             if (data.hasOwnProperty('id')) {
                 obj['id'] = ApiClient.convertToType(data['id'], 'Number');
             }
-            if (data.hasOwnProperty('roles')) {
-                obj['roles'] = ApiClient.convertToType(data['roles'], ['Number']);
+            if (data.hasOwnProperty('role_ids')) {
+                obj['role_ids'] = ApiClient.convertToType(data['role_ids'], ['Number']);
             }
             if (data.hasOwnProperty('username')) {
                 obj['username'] = ApiClient.convertToType(data['username'], 'String');
@@ -77,9 +77,9 @@ ConfiguratorInternalApiAuthListUsersResponseItem.prototype['created_at'] = undef
 ConfiguratorInternalApiAuthListUsersResponseItem.prototype['id'] = undefined;
 
 /**
- * @member {Array.<Number>} roles
+ * @member {Array.<Number>} role_ids
  */
-ConfiguratorInternalApiAuthListUsersResponseItem.prototype['roles'] = undefined;
+ConfiguratorInternalApiAuthListUsersResponseItem.prototype['role_ids'] = undefined;
 
 /**
  * @member {String} username

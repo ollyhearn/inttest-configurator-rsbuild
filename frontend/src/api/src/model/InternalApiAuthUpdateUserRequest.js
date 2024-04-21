@@ -14,18 +14,18 @@
 import ApiClient from '../ApiClient';
 
 /**
- * The InternalApiAuthCreateUserRequest model module.
- * @module model/InternalApiAuthCreateUserRequest
+ * The InternalApiAuthUpdateUserRequest model module.
+ * @module model/InternalApiAuthUpdateUserRequest
  * @version 2.0
  */
-class InternalApiAuthCreateUserRequest {
+class InternalApiAuthUpdateUserRequest {
     /**
-     * Constructs a new <code>InternalApiAuthCreateUserRequest</code>.
-     * @alias module:model/InternalApiAuthCreateUserRequest
+     * Constructs a new <code>InternalApiAuthUpdateUserRequest</code>.
+     * @alias module:model/InternalApiAuthUpdateUserRequest
      */
     constructor() { 
         
-        InternalApiAuthCreateUserRequest.initialize(this);
+        InternalApiAuthUpdateUserRequest.initialize(this);
     }
 
     /**
@@ -37,19 +37,16 @@ class InternalApiAuthCreateUserRequest {
     }
 
     /**
-     * Constructs a <code>InternalApiAuthCreateUserRequest</code> from a plain JavaScript object, optionally creating a new instance.
+     * Constructs a <code>InternalApiAuthUpdateUserRequest</code> from a plain JavaScript object, optionally creating a new instance.
      * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @param {module:model/InternalApiAuthCreateUserRequest} obj Optional instance to populate.
-     * @return {module:model/InternalApiAuthCreateUserRequest} The populated <code>InternalApiAuthCreateUserRequest</code> instance.
+     * @param {module:model/InternalApiAuthUpdateUserRequest} obj Optional instance to populate.
+     * @return {module:model/InternalApiAuthUpdateUserRequest} The populated <code>InternalApiAuthUpdateUserRequest</code> instance.
      */
     static constructFromObject(data, obj) {
         if (data) {
-            obj = obj || new InternalApiAuthCreateUserRequest();
+            obj = obj || new InternalApiAuthUpdateUserRequest();
 
-            if (data.hasOwnProperty('password')) {
-                obj['password'] = ApiClient.convertToType(data['password'], 'String');
-            }
             if (data.hasOwnProperty('role_ids')) {
                 obj['role_ids'] = ApiClient.convertToType(data['role_ids'], ['Number']);
             }
@@ -64,24 +61,19 @@ class InternalApiAuthCreateUserRequest {
 }
 
 /**
- * @member {String} password
- */
-InternalApiAuthCreateUserRequest.prototype['password'] = undefined;
-
-/**
  * @member {Array.<Number>} role_ids
  */
-InternalApiAuthCreateUserRequest.prototype['role_ids'] = undefined;
+InternalApiAuthUpdateUserRequest.prototype['role_ids'] = undefined;
 
 /**
  * @member {String} username
  */
-InternalApiAuthCreateUserRequest.prototype['username'] = undefined;
+InternalApiAuthUpdateUserRequest.prototype['username'] = undefined;
 
 
 
 
 
 
-export default InternalApiAuthCreateUserRequest;
+export default InternalApiAuthUpdateUserRequest;
 

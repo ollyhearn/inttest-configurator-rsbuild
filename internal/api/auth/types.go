@@ -10,7 +10,7 @@ type (
 	createUserRequest struct {
 		UserName string            `json:"username"`
 		Password string            `json:"password"`
-		Roles    []entity.BigIntPK `json:"roles"`
+		Roles    []entity.BigIntPK `json:"role_ids"`
 	}
 	createUserResponse struct {
 		Id        entity.BigIntPK `json:"id"`
@@ -21,7 +21,12 @@ type (
 		Id        entity.BigIntPK   `json:"id"`
 		UserName  string            `json:"username"`
 		CreatedAt time.Time         `json:"created_at"`
-		Roles     []entity.BigIntPK `json:"roles"`
+		Roles     []entity.BigIntPK `json:"role_ids"`
+	}
+
+	updateUserRequest struct {
+		UserName string            `json:"username"`
+		Roles    []entity.BigIntPK `json:"role_ids"`
 	}
 
 	authRequest struct {
@@ -46,6 +51,12 @@ type (
 		Name    string            `json:"name"`
 		Desc    *string           `json:"desc"`
 		PermIds []entity.BigIntPK `json:"perm_ids"`
+	}
+
+	listPermResponseItem struct {
+		Id   entity.BigIntPK `json:"id"`
+		Name string          `json:"name"`
+		Desc *string         `json:"desc"`
 	}
 
 	updateRoleRequest struct {

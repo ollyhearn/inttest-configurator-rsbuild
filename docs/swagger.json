@@ -59,6 +59,49 @@
                 }
             }
         },
+        "/perms": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "list all the perms in the system",
+                "operationId": "listPerms",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/configurator_internal_api_auth.listPermResponseItem"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/roles": {
             "get": {
                 "security": [
@@ -349,6 +392,62 @@
             }
         },
         "/users/{id}": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "update user",
+                "operationId": "updateUser",
+                "parameters": [
+                    {
+                        "description": "create user request model",
+                        "name": "form",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/configurator_internal_api_auth.updateUserRequest"
+                        }
+                    },
+                    {
+                        "type": "number",
+                        "description": "id of a user to update",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.OK"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrResponse"
+                        }
+                    }
+                }
+            },
             "delete": {
                 "security": [
                     {
@@ -430,7 +529,7 @@
                 "password": {
                     "type": "string"
                 },
-                "roles": {
+                "role_ids": {
                     "type": "array",
                     "items": {
                         "type": "integer"
@@ -449,6 +548,20 @@
                 },
                 "id": {
                     "type": "integer"
+                }
+            }
+        },
+        "configurator_internal_api_auth.listPermResponseItem": {
+            "type": "object",
+            "properties": {
+                "desc": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
                 }
             }
         },
@@ -481,7 +594,7 @@
                 "id": {
                     "type": "integer"
                 },
-                "roles": {
+                "role_ids": {
                     "type": "array",
                     "items": {
                         "type": "integer"
@@ -537,6 +650,20 @@
         "configurator_internal_api_auth.updateRoleResponse": {
             "type": "object"
         },
+        "configurator_internal_api_auth.updateUserRequest": {
+            "type": "object",
+            "properties": {
+                "role_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
         "internal_api_auth.authRequest": {
             "type": "object",
             "properties": {
@@ -554,7 +681,7 @@
                 "password": {
                     "type": "string"
                 },
-                "roles": {
+                "role_ids": {
                     "type": "array",
                     "items": {
                         "type": "integer"
@@ -573,6 +700,20 @@
                 },
                 "id": {
                     "type": "integer"
+                }
+            }
+        },
+        "internal_api_auth.listPermResponseItem": {
+            "type": "object",
+            "properties": {
+                "desc": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
                 }
             }
         },
@@ -605,7 +746,7 @@
                 "id": {
                     "type": "integer"
                 },
-                "roles": {
+                "role_ids": {
                     "type": "array",
                     "items": {
                         "type": "integer"
@@ -660,6 +801,20 @@
         },
         "internal_api_auth.updateRoleResponse": {
             "type": "object"
+        },
+        "internal_api_auth.updateUserRequest": {
+            "type": "object",
+            "properties": {
+                "role_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
         }
     }
 }

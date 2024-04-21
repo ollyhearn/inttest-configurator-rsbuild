@@ -35,6 +35,7 @@ func (a *API) Register(router fiber.Router, authMiddleware fiber.Handler, middle
 		r.Use(m)
 	}
 	r.Get("/", a.listUsers)
+	r.Put("/:id", a.updateUser)
 	r.Post("/", a.createUser)
 	r.Delete("/:id", a.deleteUser)
 	router.Mount("/users", r)
@@ -49,6 +50,10 @@ func (a *API) Register(router fiber.Router, authMiddleware fiber.Handler, middle
 	r.Put("/:id", a.updateRole)
 	r.Delete("/:id", a.deleteRole)
 	router.Mount("/roles", r)
+
+	r = fiber.New()
+	r.Get("/", a.listPerms)
+	router.Mount("/perms", r)
 }
 
 // createUser godoc
@@ -82,6 +87,39 @@ func (a *API) createUser(ctx *fiber.Ctx) error {
 		Id:        result.Id,
 		CreatedAt: result.CreatedAt,
 	})
+}
+
+// updateUser godoc
+// @ID updateUser
+// @Summary update user
+// @Tags users
+// @Accept  	json
+// @Produce  	json
+// @Success 200 {object} api.OK
+// @Failure 400 {object} api.ErrResponse
+// @Failure 500 {object} api.ErrResponse
+// @Security ApiKeyAuth
+// @Param form body updateUserRequest true "create user request model"
+// @Param id path number true "id of a user to update"
+// @Router /users/{id} [put]
+func (a *API) updateUser(ctx *fiber.Ctx) error {
+	updater, ok := api.GetUserEntity(ctx)
+	if !ok {
+		return errors.New("user not authorized")
+	}
+	var model updateUserRequest
+	if err := ctx.BodyParser(&model); err != nil {
+		return err
+	}
+	userId, err := entity.ParseBigIntPK(ctx.Params("id"))
+	if err != nil {
+		return err
+	}
+	_, err = a.useCase.UpdateUser(ctx.Context(), updater.Id, userId, model.UserName, model.Roles...)
+	if err != nil {
+		return err
+	}
+	return ctx.JSON(api.OK{})
 }
 
 // deleteUser godoc
@@ -239,6 +277,37 @@ func (a *API) listRoles(ctx *fiber.Ctx) error {
 			Name:    r.Name,
 			Desc:    r.Desc,
 			PermIds: lo.Map(r.Perms, func(p entAuth.Perm, _ int) entity.BigIntPK { return p.Id }),
+		}
+	})
+	return ctx.JSON(resp)
+}
+
+// listPerms godoc
+// @ID listPerms
+// @Summary list all the perms in the system
+// @Tags users
+// @Accept json
+// @Produce json
+// @Success 200 {array} listPermResponseItem
+// @Failure 400 {object} api.ErrResponse
+// @Failure 500 {object} api.ErrResponse
+// @Security ApiKeyAuth
+// @Router /perms [get]
+func (a *API) listPerms(ctx *fiber.Ctx) error {
+	user, ok := api.GetUserEntity(ctx)
+	if !ok {
+		return errors.New("user unauthorized")
+	}
+
+	result, err := a.useCase.ListPerms(ctx.Context(), user.Id)
+	if err != nil {
+		return err
+	}
+	resp := lo.Map(result, func(p entAuth.Perm, _ int) listPermResponseItem {
+		return listPermResponseItem{
+			Id:   p.Id,
+			Name: string(p.Name),
+			Desc: p.Desc,
 		}
 	})
 	return ctx.JSON(resp)

@@ -17,11 +17,13 @@ import ApiErrResponse from '../model/ApiErrResponse';
 import ConfiguratorInternalApiAuthAuthRequest from '../model/ConfiguratorInternalApiAuthAuthRequest';
 import ConfiguratorInternalApiAuthCreateUserRequest from '../model/ConfiguratorInternalApiAuthCreateUserRequest';
 import ConfiguratorInternalApiAuthCreateUserResponse from '../model/ConfiguratorInternalApiAuthCreateUserResponse';
+import ConfiguratorInternalApiAuthListPermResponseItem from '../model/ConfiguratorInternalApiAuthListPermResponseItem';
 import ConfiguratorInternalApiAuthListRoleResponseItem from '../model/ConfiguratorInternalApiAuthListRoleResponseItem';
 import ConfiguratorInternalApiAuthListUsersResponseItem from '../model/ConfiguratorInternalApiAuthListUsersResponseItem';
 import ConfiguratorInternalApiAuthRoleCreateRequest from '../model/ConfiguratorInternalApiAuthRoleCreateRequest';
 import ConfiguratorInternalApiAuthRoleCreateResponse from '../model/ConfiguratorInternalApiAuthRoleCreateResponse';
 import ConfiguratorInternalApiAuthUpdateRoleRequest from '../model/ConfiguratorInternalApiAuthUpdateRoleRequest';
+import ConfiguratorInternalApiAuthUpdateUserRequest from '../model/ConfiguratorInternalApiAuthUpdateUserRequest';
 
 /**
 * Users service.
@@ -250,6 +252,42 @@ export default class UsersApi {
     }
 
     /**
+     * Callback function to receive the result of the listPerms operation.
+     * @callback module:api/UsersApi~listPermsCallback
+     * @param {String} error Error message, if any.
+     * @param {Array.<module:model/ConfiguratorInternalApiAuthListPermResponseItem>} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * list all the perms in the system
+     * @param {module:api/UsersApi~listPermsCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link Array.<module:model/ConfiguratorInternalApiAuthListPermResponseItem>}
+     */
+    listPerms(callback) {
+      let postBody = null;
+
+      let pathParams = {
+      };
+      let queryParams = {
+      };
+      let headerParams = {
+      };
+      let formParams = {
+      };
+
+      let authNames = [];
+      let contentTypes = [];
+      let accepts = ['application/json'];
+      let returnType = [ConfiguratorInternalApiAuthListPermResponseItem];
+      return this.apiClient.callApi(
+        '/perms', 'GET',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType, null, callback
+      );
+    }
+
+    /**
      * Callback function to receive the result of the listRoles operation.
      * @callback module:api/UsersApi~listRolesCallback
      * @param {String} error Error message, if any.
@@ -363,6 +401,53 @@ export default class UsersApi {
       let returnType = Object;
       return this.apiClient.callApi(
         '/roles/{id}', 'PUT',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType, null, callback
+      );
+    }
+
+    /**
+     * Callback function to receive the result of the updateUser operation.
+     * @callback module:api/UsersApi~updateUserCallback
+     * @param {String} error Error message, if any.
+     * @param {Object} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * update user
+     * @param {Number} id id of a user to update
+     * @param {module:model/ConfiguratorInternalApiAuthUpdateUserRequest} form create user request model
+     * @param {module:api/UsersApi~updateUserCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link Object}
+     */
+    updateUser(id, form, callback) {
+      let postBody = form;
+      // verify the required parameter 'id' is set
+      if (id === undefined || id === null) {
+        throw new Error("Missing the required parameter 'id' when calling updateUser");
+      }
+      // verify the required parameter 'form' is set
+      if (form === undefined || form === null) {
+        throw new Error("Missing the required parameter 'form' when calling updateUser");
+      }
+
+      let pathParams = {
+        'id': id
+      };
+      let queryParams = {
+      };
+      let headerParams = {
+      };
+      let formParams = {
+      };
+
+      let authNames = [];
+      let contentTypes = ['application/json'];
+      let accepts = ['application/json'];
+      let returnType = Object;
+      return this.apiClient.callApi(
+        '/users/{id}', 'PUT',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, null, callback
       );
