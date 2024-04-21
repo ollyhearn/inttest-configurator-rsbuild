@@ -18,5 +18,5 @@ swag.gen:
 swag.generate.ui.api:
 	docker run --rm -v "$(BASE_DIR):/local" openapitools/openapi-generator-cli:v6.0.1 generate \
 		-i /local/docs/swagger.yaml \
-		-g javascript \
+		-g typescript-axios \
 		-o /local/frontend/src/api
